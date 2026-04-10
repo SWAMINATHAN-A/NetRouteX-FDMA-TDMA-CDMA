@@ -1,0 +1,2743 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NetRouteX | FDMA · TDMA · CDMA</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0e1a;
+        --bg2: #0f1528;
+        --bg3: #141c35;
+        --card: #111827;
+        --card2: #1a2235;
+        --border: rgba(99, 130, 255, 0.18);
+        --border2: rgba(99, 130, 255, 0.35);
+        --accent: #6382ff;
+        --accent2: #a78bfa;
+        --green: #34d399;
+        --amber: #fbbf24;
+        --pink: #f472b6;
+        --cyan: #22d3ee;
+        --red: #f87171;
+        --text: #e2e8f0;
+        --muted: #8892a4;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Space Grotesk", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: var(--sans);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: rgba(10, 14, 26, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: 62px;
+      }
+      .nav-brand {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--accent);
+        letter-spacing: -0.5px;
+      }
+      .nav-brand span {
+        color: var(--accent2);
+      }
+      .nav-tabs {
+        display: flex;
+        gap: 4px;
+      }
+      .nav-tab {
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--muted);
+        border: 1px solid transparent;
+        transition: all 0.2s;
+        background: none;
+        font-family: var(--sans);
+      }
+      .nav-tab:hover {
+        color: var(--text);
+        background: var(--card2);
+      }
+      .nav-tab.active {
+        color: var(--accent);
+        border-color: var(--border2);
+        background: rgba(99, 130, 255, 0.1);
+      }
+      .nav-btns {
+        display: flex;
+        gap: 8px;
+      }
+      .btn {
+        padding: 7px 16px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: var(--sans);
+        letter-spacing: 0.3px;
+      }
+      .btn-ghost {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+      }
+      .btn-ghost:hover {
+        border-color: var(--border2);
+        color: var(--text);
+        background: var(--card2);
+      }
+      .btn-solid {
+        background: var(--accent);
+        border: 1px solid var(--accent);
+        color: #fff;
+      }
+      .btn-solid:hover {
+        background: #7a99ff;
+        transform: translateY(-1px);
+      }
+      .btn-green {
+        background: rgba(52, 211, 153, 0.15);
+        border: 1px solid rgba(52, 211, 153, 0.3);
+        color: var(--green);
+      }
+      .btn-green:hover {
+        background: rgba(52, 211, 153, 0.25);
+      }
+
+      /* ── HERO ── */
+      .hero {
+        padding: 120px 2rem 60px;
+        text-align: center;
+        background: radial-gradient(
+          ellipse 80% 50% at 50% 0%,
+          rgba(99, 130, 255, 0.12) 0%,
+          transparent 70%
+        );
+      }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(99, 130, 255, 0.12);
+        border: 1px solid var(--border2);
+        padding: 5px 14px;
+        border-radius: 99px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+      .hero h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 700;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+      .hero h1 span {
+        color: var(--accent);
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        color: var(--muted);
+        max-width: 600px;
+        margin: 0 auto 2.5rem;
+        line-height: 1.7;
+      }
+      .hero-pills {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+      }
+      .pill {
+        padding: 8px 20px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1.5px solid;
+      }
+      .pill-f {
+        border-color: var(--green);
+        color: var(--green);
+        background: rgba(52, 211, 153, 0.08);
+      }
+      .pill-f:hover,
+      .pill-f.active {
+        background: rgba(52, 211, 153, 0.2);
+      }
+      .pill-t {
+        border-color: var(--amber);
+        color: var(--amber);
+        background: rgba(251, 191, 36, 0.08);
+      }
+      .pill-t:hover,
+      .pill-t.active {
+        background: rgba(251, 191, 36, 0.2);
+      }
+      .pill-c {
+        border-color: var(--pink);
+        color: var(--pink);
+        background: rgba(244, 114, 182, 0.08);
+      }
+      .pill-c:hover,
+      .pill-c.active {
+        background: rgba(244, 114, 182, 0.2);
+      }
+      .hero-stats {
+        display: flex;
+        gap: 3rem;
+        justify-content: center;
+      }
+      .hero-stat {
+        text-align: center;
+      }
+      .hero-stat .num {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--accent);
+        font-family: var(--mono);
+      }
+      .hero-stat .lbl {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+
+      /* ── SECTIONS ── */
+      .section {
+        padding: 4rem 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .section-header {
+        margin-bottom: 2.5rem;
+      }
+      .section-header h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+      }
+      .section-header p {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+      .tag {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 6px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        margin-bottom: 0.7rem;
+      }
+      .tag-f {
+        background: rgba(52, 211, 153, 0.15);
+        color: var(--green);
+        border: 1px solid rgba(52, 211, 153, 0.25);
+      }
+      .tag-t {
+        background: rgba(251, 191, 36, 0.15);
+        color: var(--amber);
+        border: 1px solid rgba(251, 191, 36, 0.25);
+      }
+      .tag-c {
+        background: rgba(244, 114, 182, 0.15);
+        color: var(--pink);
+        border: 1px solid rgba(244, 114, 182, 0.25);
+      }
+      .tag-gen {
+        background: rgba(99, 130, 255, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(99, 130, 255, 0.25);
+      }
+
+      /* ── CONCEPT CARDS ── */
+      .concept-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      @media (max-width: 700px) {
+        .concept-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .concept-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.5rem;
+        transition: border-color 0.2s;
+      }
+      .concept-card:hover {
+        border-color: var(--border2);
+      }
+      .concept-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+      }
+      .concept-card p {
+        font-size: 0.875rem;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+      .concept-card.wide {
+        grid-column: 1 / -1;
+      }
+
+      /* ── TABS ── */
+      .tab-bar {
+        display: flex;
+        gap: 4px;
+        background: var(--bg3);
+        padding: 5px;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        width: fit-content;
+      }
+      .tab-item {
+        padding: 8px 22px;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        color: var(--muted);
+        border: none;
+        background: none;
+        font-family: var(--sans);
+      }
+      .tab-item.active {
+        background: var(--card2);
+        color: var(--text);
+        border: 1px solid var(--border2);
+      }
+
+      /* ── VISUALIZER ── */
+      .viz-container {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .viz-header {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .viz-header h3 {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .viz-body {
+        padding: 1.5rem;
+      }
+      .viz-canvas {
+        background: var(--bg2);
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        width: 100%;
+        overflow: hidden;
+      }
+
+      /* ── CONTROLS ── */
+      .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .control-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .control-group input[type="range"] {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+      .control-group input[type="number"],
+      .control-group select {
+        width: 100%;
+        padding: 8px 10px;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.85rem;
+      }
+      .control-group input[type="number"]:focus,
+      .control-group select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .range-val {
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        color: var(--accent);
+        float: right;
+      }
+
+      /* ── SVG SPECTRUM BARS ── */
+      .spectrum-wrap {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+      }
+      .spectrum-svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ── STEP BOXES ── */
+      .steps-list {
+        list-style: none;
+        counter-reset: step;
+      }
+      .steps-list li {
+        counter-increment: step;
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 0.75rem;
+        background: var(--bg3);
+        border: 1px solid var(--border);
+      }
+      .steps-list li::before {
+        content: counter(step);
+        min-width: 28px;
+        height: 28px;
+        background: rgba(99, 130, 255, 0.2);
+        border: 1px solid var(--border2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--accent);
+        flex-shrink: 0;
+        line-height: 28px;
+        text-align: center;
+      }
+      .steps-list li strong {
+        font-size: 0.9rem;
+        color: var(--text);
+        display: block;
+        margin-bottom: 3px;
+      }
+      .steps-list li span {
+        font-size: 0.82rem;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      /* ── CODE / FORMULA BLOCKS ── */
+      .formula-box {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        color: var(--cyan);
+        margin: 1rem 0;
+      }
+      .formula-box .comment {
+        color: var(--muted);
+      }
+
+      /* ── OUTPUT BOX ── */
+      .output-box {
+        background: rgba(52, 211, 153, 0.07);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 10px;
+        padding: 1.25rem;
+      }
+      .output-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .output-row:last-child {
+        border-bottom: none;
+      }
+      .output-label {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .output-value {
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        color: var(--green);
+        font-weight: 600;
+      }
+
+      /* ── VIDEO ── */
+      .video-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ── REFS ── */
+      .ref-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        margin-bottom: 0.75rem;
+        text-decoration: none;
+        transition: border-color 0.2s;
+      }
+      .ref-card:hover {
+        border-color: var(--border2);
+      }
+      .ref-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .ref-card h4 {
+        font-size: 0.9rem;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .ref-card p {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      /* ── MODAL ── */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      .modal-overlay.open {
+        display: flex;
+      }
+      .modal {
+        background: var(--card);
+        border: 1px solid var(--border2);
+        border-radius: 18px;
+        padding: 2rem;
+        max-width: 520px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+      .modal-close {
+        float: right;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 1.3rem;
+        cursor: pointer;
+      }
+      .modal p,
+      .modal li {
+        font-size: 0.88rem;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+      .modal ul {
+        padding-left: 1.2rem;
+      }
+      .modal ul li {
+        margin-bottom: 0.4rem;
+      }
+
+      /* ── COMPARISON TABLE ── */
+      .compare-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .compare-table th,
+      .compare-table td {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+      }
+      .compare-table th {
+        background: var(--bg3);
+        color: var(--muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .compare-table td:first-child {
+        color: var(--muted);
+      }
+      .compare-table .yes {
+        color: var(--green);
+      }
+      .compare-table .no {
+        color: var(--red);
+      }
+      .compare-table .med {
+        color: var(--amber);
+      }
+
+      /* ── CHIPS ── */
+      .chip {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin: 2px;
+      }
+      .chip-g {
+        background: rgba(52, 211, 153, 0.15);
+        color: var(--green);
+      }
+      .chip-a {
+        background: rgba(251, 191, 36, 0.15);
+        color: var(--amber);
+      }
+      .chip-p {
+        background: rgba(244, 114, 182, 0.15);
+        color: var(--pink);
+      }
+      .chip-b {
+        background: rgba(99, 130, 255, 0.15);
+        color: var(--accent);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.82rem;
+        background: var(--bg2);
+      }
+
+      /* ── PAGE SECTIONS ── */
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+
+      /* ── ANIMATION ── */
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .anim {
+        animation: slideIn 0.4s ease;
+      }
+
+      /* ── CDMA CHIP ── */
+      .cdma-row {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin: 6px 0;
+      }
+      .chip-bit {
+        width: 34px;
+        height: 34px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+      .chip-pos {
+        background: rgba(52, 211, 153, 0.2);
+        color: var(--green);
+        border: 1px solid rgba(52, 211, 153, 0.3);
+      }
+      .chip-neg {
+        background: rgba(248, 113, 113, 0.2);
+        color: var(--red);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+      }
+      .chip-zero {
+        background: var(--bg3);
+        color: var(--muted);
+        border: 1px solid var(--border);
+      }
+      .chip-label {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-right: 8px;
+        font-family: var(--mono);
+        display: inline-block;
+        width: 60px;
+      }
+
+      /* dividers */
+      hr.div {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 2rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showPage('learn')">
+          📚 Learn
+        </button>
+        <button class="nav-tab" onclick="showPage('viz')">⚡ Visualize</button>
+        <button class="nav-tab" onclick="showPage('numerical')">
+          🧮 Solve
+        </button>
+        <button class="nav-tab" onclick="showPage('references')">
+          📖 References
+        </button>
+      </div>
+      <div class="nav-btns">
+        <button class="btn btn-ghost" onclick="openModal('helpModal')">
+          Help
+        </button>
+        <button class="btn btn-green" onclick="openModal('devModal')">
+          Developed by
+        </button>
+        <button class="btn btn-solid" onclick="downloadPage()">
+          ⬇ Download
+        </button>
+      </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════════ PAGE: LEARN ═══════ -->
+    <div id="page-learn" class="page active">
+      <div
+        style="
+          padding: 80px 2rem 0;
+          background: radial-gradient(
+            ellipse 80% 50% at 50% 0%,
+            rgba(99, 130, 255, 0.12) 0%,
+            transparent 70%
+          );
+        "
+      >
+        <div
+          style="
+            max-width: 1100px;
+            margin: 0 auto;
+            text-align: center;
+            padding-bottom: 3rem;
+          "
+        >
+          <div class="hero-badge">📡MULTIPLE ACCESS CONTROL</div>
+          <h1
+            style="
+              font-size: clamp(2.2rem, 5vw, 4rem);
+              font-weight: 700;
+              line-height: 1.1;
+              margin-bottom: 1rem;
+            "
+          >
+            <span style="color: var(--green)">FDMA</span> ·
+            <span style="color: var(--amber)">TDMA</span> ·
+            <span style="color: var(--pink)">CDMA</span>
+          </h1>
+          <p
+            style="
+              color: var(--muted);
+              font-size: 1.05rem;
+              max-width: 560px;
+              margin: 0 auto 2rem;
+              line-height: 1.7;
+            "
+          >
+            Channel access methods that allow multiple users to share the same
+            communication medium — the foundation of all wireless networks.
+          </p>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              justify-content: center;
+              flex-wrap: wrap;
+            "
+          >
+            <span class="chip chip-g">FDMA — Frequency</span>
+            <span class="chip chip-a">TDMA — Time</span>
+            <span class="chip chip-p">CDMA — Code</span>
+            <span class="chip chip-b">Multiple Access</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <!-- Overview -->
+        <div class="section-header">
+          <div class="tag tag-gen">Concept Overview</div>
+          <h2>What is Multiple Access?</h2>
+          <p>
+            Multiple access techniques allow many users to simultaneously share
+            a finite radio frequency spectrum.
+          </p>
+        </div>
+        <div class="concept-grid">
+          <div class="concept-card wide">
+            <h3>🌐 The Core Idea</h3>
+            <p>
+              In any wireless system, the available bandwidth is limited.
+              Multiple Access techniques divide this shared resource — either by
+              <b style="color: var(--green)">frequency</b>,
+              <b style="color: var(--amber)">time</b>, or
+              <b style="color: var(--pink)">code</b> — so many users can
+              communicate simultaneously without interfering with each other.
+              These techniques form the backbone of all cellular, satellite, and
+              wireless networks.
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3 style="color: var(--green)">🎵 FDMA</h3>
+            <p>
+              Frequency Division Multiple Access divides the available spectrum
+              into sub-bands. Each user is assigned a unique frequency channel
+              for the entire call duration. Like different radio stations — each
+              on its own frequency.
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3 style="color: var(--amber)">⏱ TDMA</h3>
+            <p>
+              Time Division Multiple Access gives each user the full bandwidth,
+              but only during their assigned time slot. Like taking turns
+              speaking — everyone uses the same frequency but at different
+              times.
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3 style="color: var(--pink)">🔑 CDMA</h3>
+            <p>
+              Code Division Multiple Access lets all users transmit
+              simultaneously on the same frequency using unique orthogonal
+              codes. Like people speaking different languages in the same room —
+              each listener only understands their own language.
+            </p>
+          </div>
+        </div>
+
+        <hr class="div" />
+
+        <!-- FDMA SECTION -->
+        <div class="section-header">
+          <div class="tag tag-f">FDMA</div>
+          <h2>Frequency Division Multiple Access</h2>
+          <p>Definition, working, and step-by-step example</p>
+        </div>
+
+        <div class="concept-card" style="margin-bottom: 1.5rem">
+          <h3>📌 Definition</h3>
+          <p>
+            FDMA is a channel access method where the total available frequency
+            bandwidth is divided into non-overlapping sub-bands (channels). Each
+            user is permanently assigned one channel for the duration of their
+            communication session.
+          </p>
+        </div>
+
+        <div class="section-header" style="margin-bottom: 1rem">
+          <h3 style="font-size: 1.1rem">⚙️ Step-by-Step Working</h3>
+        </div>
+        <ol class="steps-list">
+          <li>
+            <strong>Total Bandwidth Allocation</strong
+            ><span
+              >The system starts with a total bandwidth B (e.g., 25 MHz) divided
+              into N channels, each of width W = B/N (e.g., 200 kHz).</span
+            >
+          </li>
+          <li>
+            <strong>Guard Bands</strong
+            ><span
+              >Small guard bands are placed between channels to prevent
+              inter-channel interference (crosstalk).</span
+            >
+          </li>
+          <li>
+            <strong>Channel Assignment</strong
+            ><span
+              >When User 1 initiates a call, they are assigned Channel 1 (f₁).
+              User 2 gets Channel 2 (f₂), and so on.</span
+            >
+          </li>
+          <li>
+            <strong>Simultaneous Transmission</strong
+            ><span
+              >All users transmit simultaneously, each on their own frequency.
+              Bandpass filters at receivers extract only the desired
+              channel.</span
+            >
+          </li>
+          <li>
+            <strong>Channel Release</strong
+            ><span
+              >When the call ends, the channel is released and can be
+              re-assigned to a new user.</span
+            >
+          </li>
+        </ol>
+
+        <div
+          class="section-header"
+          style="margin-bottom: 1rem; margin-top: 1.5rem"
+        >
+          <h3 style="font-size: 1.1rem">🔢 Numerical Example</h3>
+        </div>
+        <div class="formula-box">
+          <span class="comment"
+            >// FDMA Example — 3 users, total BW = 30 MHz</span
+          ><br />
+          Total Bandwidth (B) = 30 MHz<br />
+          Number of users (N) = 3<br />
+          Guard Band (G) = 500 kHz<br /><br />
+          Channel Width (W) = (B − (N−1)×G) / N<br />
+          W = (30 − 2×0.5) / 3 = 29/3 ≈
+          <span style="color: var(--green)">9.67 MHz</span><br /><br />
+          User 1 → 1 to 9.67 MHz (f₁ center = 4.835 MHz)<br />
+          User 2 → 10.17 to 19.84 MHz (f₂ center = 15.005 MHz)<br />
+          User 3 → 20.34 to 30 MHz (f₃ center = 25.17 MHz)
+        </div>
+
+        <div class="concept-grid" style="margin-top: 1rem">
+          <div class="concept-card">
+            <h3>✅ Purpose & Advantages</h3>
+            <p>
+              • Simple to implement<br />• No timing synchronization needed<br />•
+              Continuous transmission per user<br />• Mature, proven technology
+              (1G cellular)
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3>📡 Real-World Usage</h3>
+            <p>
+              • <b style="color: var(--green)">1G cellular</b> (AMPS — Advanced
+              Mobile Phone System)<br />• AM/FM Radio broadcasting<br />•
+              Satellite transponders<br />• Cable TV (each channel on its own
+              frequency)
+            </p>
+          </div>
+        </div>
+
+        <hr class="div" />
+
+        <!-- TDMA SECTION -->
+        <div class="section-header">
+          <div class="tag tag-t">TDMA</div>
+          <h2>Time Division Multiple Access</h2>
+          <p>Definition, working, and step-by-step example</p>
+        </div>
+
+        <div class="concept-card" style="margin-bottom: 1.5rem">
+          <h3>📌 Definition</h3>
+          <p>
+            TDMA is a channel access method where all users share the same
+            frequency channel but transmit in sequential time slots within a
+            repeating frame. Each user is assigned one or more specific time
+            slots per frame.
+          </p>
+        </div>
+
+        <ol class="steps-list">
+          <li>
+            <strong>Frame Structure</strong
+            ><span
+              >Time is divided into frames. Each frame has a fixed duration T
+              (e.g., 40 ms). Each frame is divided into N equal time slots
+              (e.g., 8 slots).</span
+            >
+          </li>
+          <li>
+            <strong>Slot Assignment</strong
+            ><span
+              >User 1 → Slot 1, User 2 → Slot 2 ... User N → Slot N. The
+              assignment repeats every frame.</span
+            >
+          </li>
+          <li>
+            <strong>Burst Transmission</strong
+            ><span
+              >Users compress their data and transmit in rapid bursts during
+              their allocated slot. Voice at 64 kbps is stored and burst at 8×
+              speed during the slot.</span
+            >
+          </li>
+          <li>
+            <strong>Guard Times</strong
+            ><span
+              >Small guard times separate slots to account for propagation
+              delays and clock differences.</span
+            >
+          </li>
+          <li>
+            <strong>Synchronization</strong
+            ><span
+              >Base station broadcasts sync signals. All mobile users
+              synchronize their slot timing to the base station.</span
+            >
+          </li>
+        </ol>
+
+        <div class="formula-box" style="margin-top: 1.5rem">
+          <span class="comment">// TDMA Example — GSM Standard</span><br />
+          Frame duration (T) = 4.615 ms<br />
+          Slots per frame (N) = 8<br />
+          Slot duration = T/N = 4.615/8 =
+          <span style="color: var(--amber)">0.577 ms</span><br /><br />
+          Data rate per slot = 270.833 kbps × (1/8) =
+          <span style="color: var(--amber)">33.85 kbps</span><br />
+          Guard time per slot = 30.46 µs<br />
+          Users per channel = 8
+        </div>
+
+        <div class="concept-grid" style="margin-top: 1rem">
+          <div class="concept-card">
+            <h3>✅ Purpose & Advantages</h3>
+            <p>
+              • More efficient spectrum use than FDMA<br />• Can dynamically
+              allocate multiple slots to one user<br />• Digital — supports data
+              + voice<br />• Foundation of 2G GSM networks
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3>📡 Real-World Usage</h3>
+            <p>
+              • <b style="color: var(--amber)">2G GSM</b> (Global System for
+              Mobile)<br />• IS-136 (D-AMPS)<br />• Digital Enhanced Cordless
+              Telecom (DECT)<br />• Satellite systems (INTELSAT)
+            </p>
+          </div>
+        </div>
+
+        <hr class="div" />
+
+        <!-- CDMA SECTION -->
+        <div class="section-header">
+          <div class="tag tag-c">CDMA</div>
+          <h2>Code Division Multiple Access</h2>
+          <p>
+            Definition, working, and step-by-step example with spreading codes
+          </p>
+        </div>
+
+        <div class="concept-card" style="margin-bottom: 1.5rem">
+          <h3>📌 Definition</h3>
+          <p>
+            CDMA uses spread-spectrum technology where each user is assigned a
+            unique pseudo-random code (chip sequence). All users transmit
+            simultaneously on the same frequency, but their signals can be
+            separated at the receiver using the unique codes — based on
+            orthogonality of chip sequences.
+          </p>
+        </div>
+
+        <ol class="steps-list">
+          <li>
+            <strong>Assign Orthogonal Chip Codes</strong
+            ><span
+              >Each user gets a unique chip code of length N (e.g., N=4). Codes
+              are orthogonal: dot product of any two different codes = 0.</span
+            >
+          </li>
+          <li>
+            <strong>Signal Encoding</strong
+            ><span
+              >User's data bit (1 or 0) is XOR'd with their chip code. Bit 1 →
+              send chip code as-is. Bit 0 → send inverted chip code
+              (complement).</span
+            >
+          </li>
+          <li>
+            <strong>Transmission</strong
+            ><span
+              >All encoded signals are summed and transmitted on the same
+              frequency channel simultaneously.</span
+            >
+          </li>
+          <li>
+            <strong>Signal Separation (Decoding)</strong
+            ><span
+              >Receiver multiplies received signal with desired user's chip
+              code, then sums all chips. Due to orthogonality, other users'
+              signals sum to 0, and the desired signal is recovered.</span
+            >
+          </li>
+          <li>
+            <strong>Data Recovery</strong
+            ><span
+              >If sum / N = +1 → data bit was 1. If sum / N = -1 → data bit was
+              0.</span
+            >
+          </li>
+        </ol>
+
+        <div class="formula-box" style="margin-top: 1.5rem">
+          <span class="comment">// CDMA Example — 2 users, chip length N=4</span
+          ><br />
+          User A code: [ +1, −1, +1, +1 ] Data bit: 1<br />
+          User B code: [ +1, +1, −1, +1 ] Data bit: 0<br /><br />
+          <span class="comment">// Encoded signals</span><br />
+          A encoded: +1×[+1,−1,+1,+1] = [ +1, −1, +1, +1 ]<br />
+          B encoded: −1×[+1,+1,−1,+1] = [ −1, −1, +1, −1 ]<br /><br />
+          <span class="comment">// Channel sum (what's transmitted)</span><br />
+          Sum: [ 0, −2, +2, 0 ]<br /><br />
+          <span class="comment">// Decoding for User A</span><br />
+          Multiply: [+1,−1,+1,+1] × [0,−2,+2,0] = [0,+2,+2,0]<br />
+          Sum = <span style="color: var(--pink)">4</span>, Divide by N=4 →
+          <span style="color: var(--green)">+1 → Data bit = 1 ✓</span>
+        </div>
+
+        <div class="concept-grid" style="margin-top: 1rem">
+          <div class="concept-card">
+            <h3>✅ Purpose & Advantages</h3>
+            <p>
+              • All users share same frequency — max efficiency<br />•
+              Inherently secure (need correct code)<br />• Resistance to
+              multipath fading<br />• Soft handoff capability<br />• 3G standard
+              foundation
+            </p>
+          </div>
+          <div class="concept-card">
+            <h3>📡 Real-World Usage</h3>
+            <p>
+              • <b style="color: var(--pink)">3G WCDMA/UMTS</b><br />• cdmaOne
+              (IS-95) and CDMA2000<br />• GPS satellite positioning system<br />•
+              4G LTE uses OFDMA (evolution of CDMA)<br />• Military secure
+              communications
+            </p>
+          </div>
+        </div>
+
+        <hr class="div" />
+
+        <!-- Comparison -->
+        <div class="section-header">
+          <div class="tag tag-gen">Comparison</div>
+          <h2>FDMA vs TDMA vs CDMA</h2>
+        </div>
+        <div class="viz-container">
+          <div class="viz-body" style="padding: 0; overflow-x: auto">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Parameter</th>
+                  <th style="color: var(--green)">FDMA</th>
+                  <th style="color: var(--amber)">TDMA</th>
+                  <th style="color: var(--pink)">CDMA</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Access Method</td>
+                  <td>Frequency</td>
+                  <td>Time</td>
+                  <td>Code</td>
+                </tr>
+                <tr>
+                  <td>Bandwidth per user</td>
+                  <td class="chip-g">Fixed sub-band</td>
+                  <td>Full BW, time-shared</td>
+                  <td>Full BW, code-shared</td>
+                </tr>
+                <tr>
+                  <td>Synchronization</td>
+                  <td class="yes">Not needed</td>
+                  <td class="no">Strict required</td>
+                  <td class="med">Chip-level needed</td>
+                </tr>
+                <tr>
+                  <td>Capacity</td>
+                  <td class="no">Low</td>
+                  <td class="med">Medium</td>
+                  <td class="yes">High</td>
+                </tr>
+                <tr>
+                  <td>Interference</td>
+                  <td>Inter-channel</td>
+                  <td>Inter-slot</td>
+                  <td>Self-interference</td>
+                </tr>
+                <tr>
+                  <td>Generation</td>
+                  <td>1G</td>
+                  <td>2G (GSM)</td>
+                  <td>3G (WCDMA)</td>
+                </tr>
+                <tr>
+                  <td>Security</td>
+                  <td class="no">Low</td>
+                  <td class="med">Medium</td>
+                  <td class="yes">High (coded)</td>
+                </tr>
+                <tr>
+                  <td>Guard required</td>
+                  <td>Guard bands</td>
+                  <td>Guard times</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td>Soft handoff</td>
+                  <td class="no">No</td>
+                  <td class="no">No</td>
+                  <td class="yes">Yes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr class="div" />
+
+        <!-- Video -->
+        <div class="section-header">
+          <div class="tag tag-gen">Video Section</div>
+          <h2>📺 Learn from Video</h2>
+          <p>
+            Watch this comprehensive explanation of FDMA, TDMA, and CDMA
+            concepts
+          </p>
+        </div>
+        <div
+          class="video-container"
+          style="
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+          "
+        >
+          <iframe
+            src="https://www.youtube.com/embed/KviHyRss-dE"
+            title="FDMA TDMA CDMA"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p
+          style="
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            text-align: center;
+          "
+        >
+          "FDMA, TDMA, CDMA Explained" — Recommended for conceptual clarity
+        </p>
+      </div>
+      <!-- /section -->
+    </div>
+    <!-- /page-learn -->
+
+    <!-- ═══════════════════════════════════════════ PAGE: VISUALIZE ═══════ -->
+    <div id="page-viz" class="page">
+      <div class="section">
+        <div class="section-header">
+          <div class="tag tag-gen">Interactive Visualization</div>
+          <h2>⚡ Live Spectrum Visualizer</h2>
+          <p>
+            Adjust parameters to see how each technique divides the shared
+            channel
+          </p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-item active" onclick="setVizTab('fdma', this)">
+            FDMA Spectrum
+          </button>
+          <button class="tab-item" onclick="setVizTab('tdma', this)">
+            TDMA Frame
+          </button>
+          <button class="tab-item" onclick="setVizTab('cdma', this)">
+            CDMA Codes
+          </button>
+        </div>
+
+        <!-- FDMA VIZ -->
+        <div id="viz-fdma" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--green)">🎵 FDMA — Frequency Division</h3>
+              <button class="btn btn-green btn-ghost" onclick="animateFDMA()">
+                ▶ Animate
+              </button>
+            </div>
+            <div class="viz-body">
+              <div class="controls-grid">
+                <div class="control-group">
+                  <label
+                    >Total Bandwidth
+                    <span class="range-val" id="fdma-bw-val"
+                      >30 MHz</span
+                    ></label
+                  >
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    value="30"
+                    id="fdma-bw"
+                    oninput="updateFDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label
+                    >Number of Users
+                    <span class="range-val" id="fdma-users-val">5</span></label
+                  >
+                  <input
+                    type="range"
+                    min="2"
+                    max="10"
+                    value="5"
+                    id="fdma-users"
+                    oninput="updateFDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label
+                    >Guard Band (kHz)
+                    <span class="range-val" id="fdma-guard-val"
+                      >200</span
+                    ></label
+                  >
+                  <input
+                    type="range"
+                    min="0"
+                    max="1000"
+                    step="50"
+                    value="200"
+                    id="fdma-guard"
+                    oninput="updateFDMA()"
+                  />
+                </div>
+              </div>
+              <div
+                class="viz-canvas"
+                id="fdma-canvas"
+                style="padding: 1rem"
+              ></div>
+              <div
+                class="output-box"
+                id="fdma-output"
+                style="margin-top: 1rem"
+              ></div>
+            </div>
+          </div>
+          <div style="margin-top: 1.5rem">
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem">
+              Step-by-Step: How this FDMA configuration works
+            </h3>
+            <ol class="steps-list" id="fdma-steps">
+              <li>
+                <strong>Bandwidth Calculation</strong><span>Loading...</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- TDMA VIZ -->
+        <div id="viz-tdma" style="display: none" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--amber)">⏱ TDMA — Time Division</h3>
+              <button
+                class="btn btn-ghost"
+                style="
+                  border-color: rgba(251, 191, 36, 0.3);
+                  color: var(--amber);
+                "
+                onclick="animateTDMA()"
+              >
+                ▶ Animate
+              </button>
+            </div>
+            <div class="viz-body">
+              <div class="controls-grid">
+                <div class="control-group">
+                  <label
+                    >Frame Duration (ms)
+                    <span class="range-val" id="tdma-frame-val"
+                      >10 ms</span
+                    ></label
+                  >
+                  <input
+                    type="range"
+                    min="1"
+                    max="50"
+                    value="10"
+                    id="tdma-frame"
+                    oninput="updateTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label
+                    >Number of Users
+                    <span class="range-val" id="tdma-users-val">4</span></label
+                  >
+                  <input
+                    type="range"
+                    min="2"
+                    max="8"
+                    value="4"
+                    id="tdma-users"
+                    oninput="updateTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label
+                    >Data Rate (kbps)
+                    <span class="range-val" id="tdma-rate-val"
+                      >64 kbps</span
+                    ></label
+                  >
+                  <input
+                    type="range"
+                    min="8"
+                    max="256"
+                    step="8"
+                    value="64"
+                    id="tdma-rate"
+                    oninput="updateTDMA()"
+                  />
+                </div>
+              </div>
+              <div
+                class="viz-canvas"
+                id="tdma-canvas"
+                style="padding: 1rem"
+              ></div>
+              <div
+                class="output-box"
+                id="tdma-output"
+                style="margin-top: 1rem"
+              ></div>
+            </div>
+          </div>
+          <div style="margin-top: 1.5rem">
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem">
+              Step-by-Step: How this TDMA configuration works
+            </h3>
+            <ol class="steps-list" id="tdma-steps"></ol>
+          </div>
+        </div>
+
+        <!-- CDMA VIZ -->
+        <div id="viz-cdma" style="display: none" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--pink)">🔑 CDMA — Code Division</h3>
+              <button
+                class="btn btn-ghost"
+                style="
+                  border-color: rgba(244, 114, 182, 0.3);
+                  color: var(--pink);
+                "
+                onclick="updateCDMA()"
+              >
+                ↺ Randomize
+              </button>
+            </div>
+            <div class="viz-body">
+              <div class="controls-grid">
+                <div class="control-group">
+                  <label>Number of Users</label>
+                  <select id="cdma-users" onchange="updateCDMA()">
+                    <option value="2">2 Users</option>
+                    <option value="3">3 Users</option>
+                    <option value="4" selected>4 Users</option>
+                  </select>
+                </div>
+                <div class="control-group">
+                  <label>User A Data Bit</label>
+                  <select id="cdma-da" onchange="updateCDMA()">
+                    <option value="1">1 (send code)</option>
+                    <option value="0">0 (invert code)</option>
+                  </select>
+                </div>
+                <div class="control-group">
+                  <label>User B Data Bit</label>
+                  <select id="cdma-db" onchange="updateCDMA()">
+                    <option value="0">0 (invert code)</option>
+                    <option value="1">1 (send code)</option>
+                  </select>
+                </div>
+              </div>
+              <div id="cdma-canvas"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /section -->
+    </div>
+    <!-- /page-viz -->
+
+    <!-- ═══════════════════════════════════════════ PAGE: NUMERICAL ═══════ -->
+    <div id="page-numerical" class="page">
+      <div class="section">
+        <div class="section-header">
+          <div class="tag tag-gen">Numerical Solver</div>
+          <h2>🧮 Solve Numerical Problems</h2>
+          <p>Enter your values and get step-by-step solutions instantly</p>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab-item active" onclick="setNumTab('fdma-num', this)">
+            FDMA Calculator
+          </button>
+          <button class="tab-item" onclick="setNumTab('tdma-num', this)">
+            TDMA Calculator
+          </button>
+          <button class="tab-item" onclick="setNumTab('cdma-num', this)">
+            CDMA Decoder
+          </button>
+        </div>
+
+        <!-- FDMA NUMERICAL -->
+        <div id="fdma-num" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--green)">
+                FDMA — Channel Capacity Calculator
+              </h3>
+            </div>
+            <div class="viz-body">
+              <div class="controls-grid">
+                <div class="control-group">
+                  <label>Total Bandwidth (MHz)</label
+                  ><input
+                    type="number"
+                    id="fn-bw"
+                    value="25"
+                    step="0.1"
+                    oninput="solveFDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Number of Users</label
+                  ><input
+                    type="number"
+                    id="fn-users"
+                    value="125"
+                    oninput="solveFDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Guard Band (kHz)</label
+                  ><input
+                    type="number"
+                    id="fn-guard"
+                    value="10"
+                    step="1"
+                    oninput="solveFDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Modulation Efficiency (bps/Hz)</label
+                  ><input
+                    type="number"
+                    id="fn-mod"
+                    value="2"
+                    step="0.5"
+                    oninput="solveFDMA()"
+                  />
+                </div>
+              </div>
+              <div id="fdma-num-output"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TDMA NUMERICAL -->
+        <div id="tdma-num" style="display: none" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--amber)">
+                TDMA — Frame & Efficiency Calculator
+              </h3>
+            </div>
+            <div class="viz-body">
+              <div class="controls-grid">
+                <div class="control-group">
+                  <label>Frame Duration (ms)</label
+                  ><input
+                    type="number"
+                    id="tn-frame"
+                    value="4.615"
+                    step="0.001"
+                    oninput="solveTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Slots per Frame</label
+                  ><input
+                    type="number"
+                    id="tn-slots"
+                    value="8"
+                    oninput="solveTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Total Bit Rate (kbps)</label
+                  ><input
+                    type="number"
+                    id="tn-rate"
+                    value="270.833"
+                    step="0.001"
+                    oninput="solveTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Guard Time (µs)</label
+                  ><input
+                    type="number"
+                    id="tn-guard"
+                    value="30.46"
+                    step="0.01"
+                    oninput="solveTDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Overhead bits/slot</label
+                  ><input
+                    type="number"
+                    id="tn-overhead"
+                    value="20"
+                    oninput="solveTDMA()"
+                  />
+                </div>
+              </div>
+              <div id="tdma-num-output"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CDMA NUMERICAL -->
+        <div id="cdma-num" style="display: none" class="anim">
+          <div class="viz-container">
+            <div class="viz-header">
+              <h3 style="color: var(--pink)">
+                CDMA — Encode & Decode Calculator
+              </h3>
+            </div>
+            <div class="viz-body">
+              <p
+                style="
+                  color: var(--muted);
+                  font-size: 0.85rem;
+                  margin-bottom: 1rem;
+                "
+              >
+                Enter orthogonal chip codes and data bits to encode, transmit,
+                and decode
+              </p>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 80px;
+                  gap: 1rem;
+                  margin-bottom: 1rem;
+                "
+              >
+                <div class="control-group">
+                  <label>User A Chip Code (comma-separated)</label
+                  ><input
+                    type="text"
+                    id="cn-codeA"
+                    value="1,-1,1,1"
+                    style="
+                      width: 100%;
+                      padding: 8px 10px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border);
+                      border-radius: 8px;
+                      color: var(--text);
+                      font-family: var(--mono);
+                      font-size: 0.85rem;
+                    "
+                    oninput="solveCDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>User B Chip Code</label
+                  ><input
+                    type="text"
+                    id="cn-codeB"
+                    value="1,1,-1,1"
+                    style="
+                      width: 100%;
+                      padding: 8px 10px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border);
+                      border-radius: 8px;
+                      color: var(--text);
+                      font-family: var(--mono);
+                      font-size: 0.85rem;
+                    "
+                    oninput="solveCDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Bit A</label
+                  ><input
+                    type="number"
+                    id="cn-bitA"
+                    value="1"
+                    min="-1"
+                    max="1"
+                    oninput="solveCDMA()"
+                  />
+                </div>
+              </div>
+              <div
+                style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr 80px;
+                  gap: 1rem;
+                  margin-bottom: 1.5rem;
+                "
+              >
+                <div class="control-group">
+                  <label>User C Chip Code (optional)</label
+                  ><input
+                    type="text"
+                    id="cn-codeC"
+                    value="1,1,1,-1"
+                    style="
+                      width: 100%;
+                      padding: 8px 10px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border);
+                      border-radius: 8px;
+                      color: var(--text);
+                      font-family: var(--mono);
+                      font-size: 0.85rem;
+                    "
+                    oninput="solveCDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>User D Chip Code (optional)</label
+                  ><input
+                    type="text"
+                    id="cn-codeD"
+                    value="-1,1,1,1"
+                    style="
+                      width: 100%;
+                      padding: 8px 10px;
+                      background: var(--bg2);
+                      border: 1px solid var(--border);
+                      border-radius: 8px;
+                      color: var(--text);
+                      font-family: var(--mono);
+                      font-size: 0.85rem;
+                    "
+                    oninput="solveCDMA()"
+                  />
+                </div>
+                <div class="control-group">
+                  <label>Bit B</label
+                  ><input
+                    type="number"
+                    id="cn-bitB"
+                    value="0"
+                    min="-1"
+                    max="1"
+                    oninput="solveCDMA()"
+                  />
+                </div>
+              </div>
+              <div id="cdma-num-output"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page-numerical -->
+
+    <!-- ═══════════════════════════════════════════ PAGE: REFERENCES ═══════ -->
+    <div id="page-references" class="page">
+      <div class="section">
+        <div class="section-header">
+          <div class="tag tag-gen">References & Further Reading</div>
+          <h2>📖 Learning Resources</h2>
+          <p>Prescribed textbooks, official docs, and research resources</p>
+        </div>
+
+        <h3
+          style="
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          "
+        >
+          📚 Prescribed Textbooks
+        </h3>
+        <a
+          class="ref-card"
+          href="https://www.pearson.com/en-us/subject-catalog/p/data-communications-and-networking/P200000003245"
+          target="_blank"
+        >
+          <div class="ref-icon" style="background: rgba(99, 130, 255, 0.15)">
+            📗
+          </div>
+          <div>
+            <h4>Data Communications and Networking — Forouzan</h4>
+            <p>
+              Bahaa A. Forouzan · McGraw-Hill · Chapter 13: Multiple Access
+              Protocols · Primary textbook reference
+            </p>
+          </div>
+        </a>
+        <a
+          class="ref-card"
+          href="https://www.pearsonhighered.com/assets/samplechapter/0/1/3/3/0133594939.pdf"
+          target="_blank"
+        >
+          <div class="ref-icon" style="background: rgba(52, 211, 153, 0.15)">
+            📘
+          </div>
+          <div>
+            <h4>Wireless Communications — Rappaport</h4>
+            <p>
+              Theodore S. Rappaport · Pearson · Chapter 10: Multiple Access for
+              Wireless · CDMA deep dive
+            </p>
+          </div>
+        </a>
+
+        <h3
+          style="
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          "
+        >
+          🌐 Official Technical Resources
+        </h3>
+
+        <a
+          class="ref-card"
+          href="https://www.3gpp.org/technologies/fdma-tdma-cdma"
+          target="_blank"
+        >
+          <div class="ref-icon" style="background: rgba(251, 191, 36, 0.15)">
+            📡
+          </div>
+          <div>
+            <h4>3GPP — Multiple Access Technologies</h4>
+            <p>
+              3rd Generation Partnership Project · TDMA (GSM), CDMA (UMTS/WCDMA)
+              specifications
+            </p>
+          </div>
+        </a>
+
+        <h3
+          style="
+            font-size: 1rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          "
+        >
+          🎓 Educational & Research Resources
+        </h3>
+        <a
+          class="ref-card"
+          href="https://nptel.ac.in/courses/106104078"
+          target="_blank"
+        >
+          <div class="ref-icon" style="background: rgba(52, 211, 153, 0.15)">
+            🎓
+          </div>
+          <div>
+            <h4>NPTEL — Wireless Communications</h4>
+            <p>
+              IIT Course · Free lectures on FDMA, TDMA, CDMA with numerical
+              problems · nptel.ac.in
+            </p>
+          </div>
+        </a>
+        <a
+          class="ref-card"
+          href="https://www.vlab.co.in/broad-area-computer-science-and-engineering"
+          target="_blank"
+        >
+          <div class="ref-icon" style="background: rgba(244, 114, 182, 0.15)">
+            🔬
+          </div>
+          <div>
+            <h4>Virtual Lab — IIT Bombay</h4>
+            <p>
+              Interactive simulations for networking concepts including MAC
+              protocols and multiple access
+            </p>
+          </div>
+        </a>
+      </div>
+    </div>
+    <!-- /page-references -->
+
+    <!-- MODALS -->
+    <div
+      class="modal-overlay"
+      id="helpModal"
+      onclick="if (event.target === this) closeModal('helpModal');"
+    >
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('helpModal')">✕</button>
+        <h2>📖 How to Use This Web App</h2>
+        <p style="margin-bottom: 1rem; color: var(--text)">
+          This interactive tool covers FDMA, TDMA, and CDMA concepts with
+          visualization and numerical solvers.
+        </p>
+        <ul>
+          <li>
+            <b>Learn tab</b> — Read full concept explanations with step-by-step
+            working and examples
+          </li>
+          <li>
+            <b>Visualize tab</b> — Adjust sliders to see animated
+            spectrum/frame/code diagrams
+          </li>
+          <li>
+            <b>Solve tab</b> — Enter your own values to get step-by-step
+            numerical solutions
+          </li>
+          <li>
+            <b>References tab</b> — Textbooks and NPTEL/Virtual Lab resources
+          </li>
+          <li><b>Download button</b> — Save this entire app as an HTML file</li>
+        </ul>
+        <p style="margin-top: 1rem">
+          For CDMA decoder: enter comma-separated values like
+          <code
+            style="
+              background: var(--bg2);
+              padding: 2px 6px;
+              border-radius: 4px;
+              font-family: var(--mono);
+            "
+            >1,-1,1,1</code
+          >
+          for chip codes.
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="modal-overlay"
+      id="devModal"
+      onclick="if (event.target === this) closeModal('devModal');"
+    >
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('devModal')">✕</button>
+
+        <h2>👨‍💻 Developed By</h2>
+
+        <!-- ERWIN -->
+        <div
+          style="
+            background: var(--bg2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+          "
+        >
+          <img
+            src="erwin.jpeg"
+            style="
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid var(--accent);
+              box-shadow:
+                0 0 10px rgba(0, 200, 255, 0.6),
+                0 0 20px rgba(0, 200, 255, 0.3);
+            "
+          />
+
+          <div>
+            <p
+              style="
+                color: var(--text);
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+              "
+            >
+              Erwin
+            </p>
+
+            <p style="margin-bottom: 0.25rem">
+              Registration No:
+              <b style="color: var(--accent)">24BYB1131</b>
+            </p>
+          </div>
+        </div>
+
+        <!-- ANISHA -->
+        <div
+          style="
+            background: var(--bg2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+          "
+        >
+          <img
+            src="IMG_20250608_180256.jpg"
+            style="
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid var(--accent);
+              box-shadow:
+                0 0 10px rgba(0, 200, 255, 0.6),
+                0 0 20px rgba(0, 200, 255, 0.3);
+            "
+          />
+
+          <div>
+            <p
+              style="
+                color: var(--text);
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 0.25rem;
+              "
+            >
+              Anisha Sharma
+            </p>
+
+            <p>
+              Registration No:
+              <b style="color: var(--accent)">24BYB1138</b>
+            </p>
+          </div>
+        </div>
+
+        <!-- DIVIDER -->
+        <div
+          style="height: 1px; background: var(--border); margin: 16px 0"
+        ></div>
+
+        <!-- PROFESSOR -->
+        <h3
+          style="
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+          "
+        >
+          Guided By
+        </h3>
+
+        <div
+          style="
+            background: var(--bg2);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
+          "
+        >
+          <img
+            src="https://swaminathan-a.github.io/VRC_Simulator/guide-photo.jpg"
+            style="
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid var(--accent);
+              box-shadow:
+                0 0 10px rgba(0, 200, 255, 0.6),
+                0 0 20px rgba(0, 200, 255, 0.3);
+            "
+          />
+
+          <div>
+            <p style="color: var(--text); font-size: 1rem; font-weight: 600">
+              Dr. Swaminathan Annadurai
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-top: 1rem; font-size: 0.8rem; text-align: center">
+          VIT Chennai · B.Tech CSE · Computer Networks Lab · 2025–26
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // ═══════════════════════ PAGE NAVIGATION ═══════════════════════
+      function showPage(id) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("page-" + id).classList.add("active");
+        document
+          .querySelectorAll(".nav-tab")
+          .forEach((t) => t.classList.remove("active"));
+        event.currentTarget.classList.add("active");
+        if (id === "viz") {
+          updateFDMA();
+        }
+        if (id === "numerical") {
+          solveFDMA();
+          solveTDMA();
+          solveCDMA();
+        }
+      }
+
+      // ═══════════════════════ TAB SWITCHING ═══════════════════════
+      function setVizTab(id, el) {
+        ["fdma", "tdma", "cdma"].forEach((k) => {
+          const el2 = document.getElementById("viz-" + k);
+          if (el2) el2.style.display = "none";
+        });
+        document.getElementById("viz-" + id).style.display = "block";
+        document
+          .querySelectorAll(".tab-bar .tab-item")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+        if (id === "fdma") updateFDMA();
+        if (id === "tdma") updateTDMA();
+        if (id === "cdma") updateCDMA();
+      }
+
+      function setNumTab(id, el) {
+        ["fdma-num", "tdma-num", "cdma-num"].forEach((k) => {
+          const e = document.getElementById(k);
+          if (e) e.style.display = "none";
+        });
+        document.getElementById(id).style.display = "block";
+        document
+          .querySelectorAll(".tab-bar .tab-item")
+          .forEach((t) => t.classList.remove("active"));
+        el.classList.add("active");
+      }
+
+      // ═══════════════════════ MODALS ═══════════════════════
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      // ═══════════════════════ DOWNLOAD ═══════════════════════
+      function downloadPage() {
+        const a = document.createElement("a");
+        a.href = window.location.href;
+        a.download = "FDMA_TDMA_CDMA_NetRouteX.html";
+        // For file-based use, just save the page content
+        const blob = new Blob([document.documentElement.outerHTML], {
+          type: "text/html",
+        });
+        a.href = URL.createObjectURL(blob);
+        a.click();
+      }
+
+      // ═══════════════════════ FDMA VISUALIZER ═══════════════════════
+      const COLORS_F = [
+        "#34d399",
+        "#6ee7b7",
+        "#22d3ee",
+        "#67e8f9",
+        "#a78bfa",
+        "#818cf8",
+        "#f472b6",
+        "#fb7185",
+        "#fbbf24",
+        "#f59e0b",
+      ];
+
+      function updateFDMA() {
+        const bw = parseFloat(document.getElementById("fdma-bw").value);
+        const n = parseInt(document.getElementById("fdma-users").value);
+        const guard =
+          parseFloat(document.getElementById("fdma-guard").value) / 1000; // MHz
+
+        document.getElementById("fdma-bw-val").textContent = bw + " MHz";
+        document.getElementById("fdma-users-val").textContent = n;
+        document.getElementById("fdma-guard-val").textContent =
+          document.getElementById("fdma-guard").value + " kHz";
+
+        const totalGuard = (n - 1) * guard;
+        const chWidth = (bw - totalGuard) / n;
+        const canvas = document.getElementById("fdma-canvas");
+
+        let svg = `<svg width="100%" viewBox="0 0 800 180" xmlns="http://www.w3.org/2000/svg" style="font-family:var(--sans)">`;
+        // Axis
+        svg += `<line x1="30" y1="150" x2="780" y2="150" stroke="#ffffff22" stroke-width="1"/>`;
+        svg += `<text x="400" y="173" fill="#8892a4" font-size="11" text-anchor="middle">Frequency →</text>`;
+        svg += `<text x="10" y="40" fill="#8892a4" font-size="10" transform="rotate(-90,10,80)">Power</text>`;
+
+        const drawW = 750;
+        let x = 30;
+        for (let i = 0; i < n; i++) {
+          const barW = (chWidth / bw) * drawW;
+          const gW = (guard / bw) * drawW;
+          const col = COLORS_F[i % COLORS_F.length];
+          // Channel bar
+          svg += `<rect x="${x}" y="40" width="${barW}" height="110" fill="${col}" opacity="0.18" rx="3"/>`;
+          svg += `<rect x="${x}" y="40" width="${barW}" height="110" fill="none" stroke="${col}" stroke-width="1.2" rx="3" opacity="0.7"/>`;
+          // Top label
+          const cx = x + barW / 2;
+          svg += `<text x="${cx}" y="30" fill="${col}" font-size="11" font-weight="600" text-anchor="middle">U${i + 1}</text>`;
+          svg += `<text x="${cx}" y="100" fill="${col}" font-size="10" text-anchor="middle">${chWidth.toFixed(2)} MHz</text>`;
+          x += barW;
+          // Guard band
+          if (i < n - 1 && guard > 0) {
+            svg += `<rect x="${x}" y="40" width="${gW}" height="110" fill="#ffffff" opacity="0.04" rx="1"/>`;
+            if (gW > 18)
+              svg += `<text x="${x + gW / 2}" y="160" fill="#555f70" font-size="9" text-anchor="middle">G</text>`;
+            x += gW;
+          }
+        }
+        svg += `</svg>`;
+        canvas.innerHTML = svg;
+
+        // Output
+        document.getElementById("fdma-output").innerHTML = `
+      <div class="output-row"><span class="output-label">Channel Width</span><span class="output-value">${chWidth.toFixed(3)} MHz</span></div>
+      <div class="output-row"><span class="output-label">Total Guard BW Used</span><span class="output-value">${totalGuard.toFixed(3)} MHz</span></div>
+      <div class="output-row"><span class="output-label">Spectral Efficiency</span><span class="output-value">${(((bw - totalGuard) / bw) * 100).toFixed(1)}%</span></div>
+      <div class="output-row"><span class="output-label">Users Supported</span><span class="output-value">${n}</span></div>`;
+
+        // Steps
+        document.getElementById("fdma-steps").innerHTML = `
+      <li><strong>Total bandwidth</strong><span>System has ${bw} MHz to distribute among ${n} users.</span></li>
+      <li><strong>Guard band allocation</strong><span>(${n}−1) × ${guard.toFixed(3)} MHz = ${totalGuard.toFixed(3)} MHz used for guard bands.</span></li>
+      <li><strong>Usable bandwidth</strong><span>${bw} − ${totalGuard.toFixed(3)} = ${(bw - totalGuard).toFixed(3)} MHz</span></li>
+      <li><strong>Channel width</strong><span>${(bw - totalGuard).toFixed(3)} ÷ ${n} = <b style="color:var(--green)">${chWidth.toFixed(3)} MHz per user</b></span></li>
+      <li><strong>Assignment</strong><span>User 1 → 0 to ${chWidth.toFixed(2)} MHz | User 2 → ${(chWidth + guard).toFixed(2)} to ${(2 * chWidth + guard).toFixed(2)} MHz, etc.</span></li>`;
+      }
+
+      function animateFDMA() {
+        let users = 1;
+        const max = parseInt(document.getElementById("fdma-users").value);
+        document.getElementById("fdma-users").value = 1;
+        updateFDMA();
+        const iv = setInterval(() => {
+          users++;
+          document.getElementById("fdma-users").value = users;
+          document.getElementById("fdma-users-val").textContent = users;
+          updateFDMA();
+          if (users >= max) clearInterval(iv);
+        }, 500);
+      }
+
+      // ═══════════════════════ TDMA VISUALIZER ═══════════════════════
+      const COLORS_T = [
+        "#fbbf24",
+        "#f59e0b",
+        "#34d399",
+        "#22d3ee",
+        "#a78bfa",
+        "#f472b6",
+        "#6ee7b7",
+        "#818cf8",
+      ];
+
+      function updateTDMA() {
+        const frame = parseFloat(document.getElementById("tdma-frame").value);
+        const n = parseInt(document.getElementById("tdma-users").value);
+        const rate = parseFloat(document.getElementById("tdma-rate").value);
+
+        document.getElementById("tdma-frame-val").textContent = frame + " ms";
+        document.getElementById("tdma-users-val").textContent = n;
+        document.getElementById("tdma-rate-val").textContent = rate + " kbps";
+
+        const slotDur = frame / n;
+        const bitsPerSlot = rate * slotDur; // kbps * ms = bits
+        const canvas = document.getElementById("tdma-canvas");
+
+        // Draw frame + slots
+        let svg = `<svg width="100%" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">`;
+        // Frame label
+        svg += `<text x="400" y="18" fill="#8892a4" font-size="12" text-anchor="middle" font-family="var(--sans)">← Frame: ${frame} ms →</text>`;
+        svg += `<line x1="30" y1="22" x2="770" y2="22" stroke="#8892a4" stroke-width="0.5" marker-start="url(#am)" marker-end="url(#am2)"/>`;
+
+        // Slot dimensions
+        const drawW = 740;
+        const slotW = drawW / n;
+
+        for (let i = 0; i < n; i++) {
+          const x = 30 + i * slotW;
+          const col = COLORS_T[i % COLORS_T.length];
+          svg += `<rect x="${x + 1}" y="35" width="${slotW - 2}" height="100" fill="${col}" opacity="0.18" rx="4"/>`;
+          svg += `<rect x="${x + 1}" y="35" width="${slotW - 2}" height="100" fill="none" stroke="${col}" stroke-width="1.5" rx="4" opacity="0.8"/>`;
+          const cx = x + slotW / 2;
+          svg += `<text x="${cx}" y="68" fill="${col}" font-size="${slotW > 80 ? 13 : 10}" font-weight="700" text-anchor="middle" font-family="var(--sans)">U${i + 1}</text>`;
+          if (slotW > 60)
+            svg += `<text x="${cx}" y="88" fill="${col}" opacity="0.7" font-size="9" text-anchor="middle" font-family="var(--sans)">${slotDur.toFixed(2)}ms</text>`;
+          // Data bits visualization
+          const numBits = Math.min(Math.floor(bitsPerSlot / 8), 8);
+          for (let b = 0; b < numBits; b++) {
+            const bx = x + 4 + (b * (slotW - 8)) / Math.max(numBits, 1);
+            const bh = Math.random() * 30 + 20;
+            svg += `<rect x="${bx}" y="${135 - bh}" width="${(slotW - 8) / Math.max(numBits, 1) - 1}" height="${bh}" fill="${col}" opacity="0.5" rx="2"/>`;
+          }
+        }
+
+        // Time axis
+        svg += `<line x1="30" y1="145" x2="770" y2="145" stroke="#ffffff22" stroke-width="1"/>`;
+        svg += `<text x="400" y="165" fill="#8892a4" font-size="11" text-anchor="middle" font-family="var(--sans)">Time →</text>`;
+
+        // Second frame (faded)
+        for (let i = 0; i < n; i++) {
+          const x = 30 + i * slotW;
+          const col = COLORS_T[i % COLORS_T.length];
+          svg += `<rect x="${x + 771}" y="35" width="${slotW - 2}" height="100" fill="${col}" opacity="0.06" rx="4"/>`;
+          svg += `<rect x="${x + 771}" y="35" width="${slotW - 2}" height="100" fill="none" stroke="${col}" stroke-width="0.8" rx="4" opacity="0.3"/>`;
+        }
+
+        svg += `</svg>`;
+        canvas.innerHTML = svg;
+
+        const effBits = bitsPerSlot - 20; // minus overhead
+        document.getElementById("tdma-output").innerHTML = `
+      <div class="output-row"><span class="output-label">Slot Duration</span><span class="output-value">${slotDur.toFixed(4)} ms</span></div>
+      <div class="output-row"><span class="output-label">Bits per Slot</span><span class="output-value">${bitsPerSlot.toFixed(1)} bits</span></div>
+      <div class="output-row"><span class="output-label">Effective bit rate/user</span><span class="output-value">${(rate / n).toFixed(2)} kbps</span></div>
+      <div class="output-row"><span class="output-label">Frame efficiency</span><span class="output-value">${((effBits / bitsPerSlot) * 100).toFixed(1)}%</span></div>`;
+
+        document.getElementById("tdma-steps").innerHTML = `
+      <li><strong>Frame structure</strong><span>Frame duration = ${frame} ms divided into ${n} equal slots.</span></li>
+      <li><strong>Slot duration</strong><span>${frame} ÷ ${n} = <b style="color:var(--amber)">${slotDur.toFixed(4)} ms</b> per slot.</span></li>
+      <li><strong>Bits per slot</strong><span>${rate} kbps × ${slotDur.toFixed(4)} ms = ${bitsPerSlot.toFixed(1)} bits per slot.</span></li>
+      <li><strong>User data rate</strong><span>Each user effectively gets ${rate} ÷ ${n} = <b style="color:var(--amber)">${(rate / n).toFixed(2)} kbps</b> average.</span></li>
+      <li><strong>Throughput</strong><span>With overhead bits, efficiency = ${((effBits / bitsPerSlot) * 100).toFixed(1)}% of slot used for actual data.</span></li>`;
+      }
+
+      function animateTDMA() {
+        let slot = 0;
+        const n = parseInt(document.getElementById("tdma-users").value);
+        const canvas = document.getElementById("tdma-canvas");
+        const svgEls = canvas.querySelectorAll("rect");
+        // Flash slots
+        let i = 0;
+        const iv = setInterval(() => {
+          updateTDMA();
+          i = (i + 1) % n;
+        }, 600);
+        setTimeout(() => clearInterval(iv), 4000);
+      }
+
+      // ═══════════════════════ CDMA VISUALIZER ═══════════════════════
+      const WALSH_CODES = [
+        [1, 1, 1, 1],
+        [1, -1, 1, -1],
+        [1, 1, -1, -1],
+        [1, -1, -1, 1],
+      ];
+
+      function updateCDMA() {
+        const n = parseInt(document.getElementById("cdma-users").value);
+        const dA = parseInt(document.getElementById("cdma-da").value);
+        const dB = parseInt(document.getElementById("cdma-db").value);
+
+        const codes = WALSH_CODES.slice(0, n);
+        const data = [dA, dB, 1, 0].slice(0, n);
+        const bitLabel = (v) => (v === 1 ? "+1" : "-1");
+        const colors = [
+          "var(--green)",
+          "var(--amber)",
+          "var(--pink)",
+          "var(--cyan)",
+        ];
+        const userNames = ["A", "B", "C", "D"];
+
+        // Encode
+        const encoded = codes.map((c, i) =>
+          c.map((b) => b * (data[i] === 0 ? -1 : 1)),
+        );
+        const channelSum = new Array(4).fill(0);
+        encoded.forEach((e) => e.forEach((v, i) => (channelSum[i] += v)));
+
+        let html = `<div style="overflow-x:auto">`;
+
+        // Codes
+        html += `<p style="color:var(--muted);font-size:0.78rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px">Chip Codes (Walsh)</p>`;
+        codes.forEach((c, i) => {
+          html += `<div style="display:flex;align-items:center;margin-bottom:6px">`;
+          html += `<span class="chip-label" style="color:${colors[i]}">User ${userNames[i]}:</span>`;
+          html += `<div class="cdma-row">`;
+          c.forEach(
+            (b) =>
+              (html += `<div class="chip-bit ${b > 0 ? "chip-pos" : "chip-neg"}">${b > 0 ? "+1" : "−1"}</div>`),
+          );
+          html += `</div><span style="margin-left:12px;font-size:0.82rem;color:${colors[i]}">Data: ${data[i] === 1 ? "+1 (bit=1)" : "−1 (bit=0)"}</span>`;
+          html += `</div>`;
+        });
+
+        html += `<div style="margin:1rem 0;border-top:1px solid var(--border)"></div>`;
+
+        // Encoded
+        html += `<p style="color:var(--muted);font-size:0.78rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px">Encoded Signals</p>`;
+        encoded.forEach((e, i) => {
+          html += `<div style="display:flex;align-items:center;margin-bottom:6px">`;
+          html += `<span class="chip-label" style="color:${colors[i]}">S${userNames[i]}:</span>`;
+          html += `<div class="cdma-row">`;
+          e.forEach(
+            (b) =>
+              (html += `<div class="chip-bit ${b > 0 ? "chip-pos" : "chip-neg"}">${b > 0 ? "+1" : "−1"}</div>`),
+          );
+          html += `</div>`;
+          html += `</div>`;
+        });
+
+        html += `<div style="margin:1rem 0;border-top:1px solid var(--border)"></div>`;
+
+        // Channel sum
+        html += `<p style="color:var(--muted);font-size:0.78rem;margin-bottom:0.5rem;text-transform:uppercase;letter-spacing:0.5px">Channel Sum (Transmitted)</p>`;
+        html += `<div style="display:flex;align-items:center;margin-bottom:1rem">`;
+        html += `<span class="chip-label" style="color:var(--accent)">Σ:</span><div class="cdma-row">`;
+        channelSum.forEach((b) => {
+          const cls = b > 0 ? "chip-pos" : b < 0 ? "chip-neg" : "chip-zero";
+          html += `<div class="chip-bit ${cls}">${b > 0 ? "+" + b : b}</div>`;
+        });
+        html += `</div></div>`;
+
+        // Decode User A
+        html += `<div style="margin:1rem 0;border-top:1px solid var(--border)"></div>`;
+        html += `<p style="color:var(--muted);font-size:0.78rem;margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.5px">Decoding for each user</p>`;
+
+        codes.forEach((code, i) => {
+          const product = channelSum.map((s, j) => s * code[j]);
+          const sum = product.reduce((a, b) => a + b, 0);
+          const decoded = sum / code.length;
+          const recoveredBit = decoded > 0 ? 1 : 0;
+          const correct = recoveredBit === data[i];
+          html += `<div style="background:var(--bg3);border-radius:8px;padding:0.75rem;margin-bottom:0.5rem;border:1px solid var(--border)">`;
+          html += `<span style="color:${colors[i]};font-size:0.85rem;font-weight:600">User ${userNames[i]}</span>: Multiply by code → [`;
+          html +=
+            product.map((v) => (v > 0 ? "+" + v : v)).join(", ") +
+            `] → Sum=${sum} → ÷${code.length} = <b style="color:${correct ? "var(--green)" : "var(--red)"}">${decoded > 0 ? "+1" : "−1"} → Bit = ${recoveredBit} ${correct ? "✓" : "✗"}</b>`;
+          html += `</div>`;
+        });
+
+        html += `</div>`;
+        document.getElementById("cdma-canvas").innerHTML = html;
+      }
+
+      // ═══════════════════════ FDMA NUMERICAL SOLVER ═══════════════════════
+      function solveFDMA() {
+        const bw = parseFloat(document.getElementById("fn-bw").value) || 0;
+        const n = parseInt(document.getElementById("fn-users").value) || 1;
+        const g =
+          parseFloat(document.getElementById("fn-guard").value) / 1000 || 0;
+        const m = parseFloat(document.getElementById("fn-mod").value) || 1;
+
+        const totalG = (n - 1) * g;
+        const usable = bw - totalG;
+        const chW = usable / n;
+        const chWkHz = chW * 1000;
+        const userRate = chWkHz * m;
+        const totalRate = bw * 1000 * m;
+        const eff = (usable / bw) * 100;
+
+        document.getElementById("fdma-num-output").innerHTML = `
+      <div class="formula-box">
+  <span class="comment">Given:</span> <br>
+  Total BW         = ${bw} MHz <br>
+  Users (N)        = ${n} <br>
+  Guard Band (g)   = ${g.toFixed(4)} MHz each <br>
+  Modulation (η)   = ${m} bps/Hz 
+  <br>
+  <span class="comment">Step 1: Total guard bandwidth</span> <br>
+  Total guard BW   = (N−1) × g = (${n}−1) × ${g.toFixed(4)} = <span style="color:var(--green)">${totalG.toFixed(4)} MHz</span>
+  <br>
+  <span class="comment">Step 2: Usable bandwidth</span> <br>
+  Usable BW        = ${bw} − ${totalG.toFixed(4)} = <span style="color:var(--green)">${usable.toFixed(4)} MHz</span>
+  <br>
+  <span class="comment">Step 3: Channel width per user</span><br>
+  Channel width    = ${usable.toFixed(4)} ÷ ${n} = <span style="color:var(--green)">${chW.toFixed(4)} MHz = ${chWkHz.toFixed(2)} kHz</span>
+  <br>
+  <span class="comment">Step 4: Data rate per user</span><br>
+  Rate/user        = ${chWkHz.toFixed(2)} kHz × ${m} = <span style="color:var(--green)">${userRate.toFixed(2)} kbps</span>
+  <br>
+  <span class="comment">Step 5: Spectral efficiency</span><br>
+  Efficiency       = ${usable.toFixed(4)} ÷ ${bw} × 100 = <span style="color:var(--green)">${eff.toFixed(2)}%</span>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Channel Width</span><span class="output-value">${chWkHz.toFixed(2)} kHz</span></div>
+        <div class="output-row"><span class="output-label">Data Rate per User</span><span class="output-value">${userRate.toFixed(2)} kbps</span></div>
+        <div class="output-row"><span class="output-label">Total Capacity</span><span class="output-value">${totalRate.toFixed(0)} kbps</span></div>
+        <div class="output-row"><span class="output-label">Spectral Efficiency</span><span class="output-value">${eff.toFixed(2)}%</span></div>
+        <div class="output-row"><span class="output-label">Guard BW Wasted</span><span class="output-value">${(totalG * 1000).toFixed(2)} kHz</span></div>
+      </div>`;
+      }
+
+      // ═══════════════════════ TDMA NUMERICAL SOLVER ═══════════════════════
+      function solveTDMA() {
+        const frame =
+          parseFloat(document.getElementById("tn-frame").value) || 0;
+        const slots = parseInt(document.getElementById("tn-slots").value) || 1;
+        const rate = parseFloat(document.getElementById("tn-rate").value) || 0;
+        const guard =
+          parseFloat(document.getElementById("tn-guard").value) / 1000 || 0; // ms
+        const oh = parseInt(document.getElementById("tn-overhead").value) || 0;
+
+        const slotDur = frame / slots;
+        const effSlotDur = slotDur - guard;
+        const bitsPerSlot = rate * slotDur;
+        const effBits = bitsPerSlot - oh;
+        const userRate = rate / slots;
+        const frameEff = (effBits / bitsPerSlot) * 100;
+        const bitsPerFrame = rate * frame;
+
+        document.getElementById("tdma-num-output").innerHTML = `
+      <div class="formula-box">
+  <span class="comment">Given:</span> <br>
+  Frame duration   = ${frame} ms <br>
+  Slots per frame  = ${slots}<br>
+  Total bit rate   = ${rate} kbps <br>
+  Guard time       = ${guard.toFixed(5)} ms per slot <br>
+  Overhead         = ${oh} bits per slot <br>
+
+  <span class="comment">Step 1: Slot duration</span><br>
+  Slot duration    = ${frame} ÷ ${slots} = <span style="color:var(--amber)">${slotDur.toFixed(4)} ms</span>
+  <br>
+  <span class="comment">Step 2: Effective slot duration (minus guard)</span><br>
+  Eff. slot dur    = ${slotDur.toFixed(4)} − ${guard.toFixed(5)} = <span style="color:var(--amber)">${effSlotDur.toFixed(4)} ms</span>
+  <br>
+  <span class="comment">Step 3: Bits per slot</span><br>
+  Bits/slot        = ${rate} × ${slotDur.toFixed(4)} = <span style="color:var(--amber)">${bitsPerSlot.toFixed(2)} bits</span>
+  <br>
+  <span class="comment">Step 4: Effective data bits per slot</span><br>
+  Eff. bits/slot   = ${bitsPerSlot.toFixed(2)} − ${oh} = <span style="color:var(--amber)">${effBits.toFixed(2)} bits</span>
+  <br>
+  <span class="comment">Step 5: Average data rate per user</span><br>
+  Rate/user        = ${rate} ÷ ${slots} = <span style="color:var(--amber)">${userRate.toFixed(3)} kbps</span>
+  <br>
+  <span class="comment">Step 6: Frame efficiency</span><br>
+  Frame eff        = ${effBits.toFixed(2)} ÷ ${bitsPerSlot.toFixed(2)} × 100 = <span style="color:var(--amber)">${frameEff.toFixed(2)}%</span>
+      </div>
+      <div class="output-box">
+        <div class="output-row"><span class="output-label">Slot Duration</span><span class="output-value">${slotDur.toFixed(4)} ms</span></div>
+        <div class="output-row"><span class="output-label">Bits per Slot</span><span class="output-value">${bitsPerSlot.toFixed(2)} bits</span></div>
+        <div class="output-row"><span class="output-label">User Data Rate</span><span class="output-value">${userRate.toFixed(3)} kbps</span></div>
+        <div class="output-row"><span class="output-label">Frame Efficiency</span><span class="output-value">${frameEff.toFixed(2)}%</span></div>
+        <div class="output-row"><span class="output-label">Bits per Frame</span><span class="output-value">${bitsPerFrame.toFixed(2)} bits</span></div>
+      </div>`;
+      }
+
+      // ═══════════════════════ CDMA NUMERICAL SOLVER ═══════════════════════
+      function solveCDMA() {
+        const parseCode = (id) => {
+          try {
+            return document
+              .getElementById(id)
+              .value.trim()
+              .split(",")
+              .map((v) => parseFloat(v.trim()));
+          } catch (e) {
+            return [];
+          }
+        };
+        const cA = parseCode("cn-codeA");
+        const cB = parseCode("cn-codeB");
+        const cC = parseCode("cn-codeC");
+        const cD = parseCode("cn-codeD");
+        const bA = parseInt(document.getElementById("cn-bitA").value);
+        const bB = parseInt(document.getElementById("cn-bitB").value);
+        const N = cA.length;
+        if (N < 2 || cB.length !== N) {
+          document.getElementById("cdma-num-output").innerHTML =
+            `<p style="color:var(--red)">Error: codes must be same length and comma-separated.</p>`;
+          return;
+        }
+
+        // Check orthogonality
+        const dot = (a, b) => a.reduce((s, v, i) => s + v * b[i], 0);
+        const orthoAB = dot(cA, cB);
+        const useC = cC.length === N && cC.every((v) => !isNaN(v));
+        const useD = cD.length === N && cD.every((v) => !isNaN(v));
+
+        const encA = cA.map((v) => v * (bA === 0 ? -1 : 1));
+        const encB = cB.map((v) => v * (bB === 0 ? -1 : 1));
+        const encC = useC ? cC.map((v) => v * 1) : null;
+        const encD = useD ? cD.map((v) => v * -1) : null;
+
+        const chSum = cA.map(
+          (_, i) =>
+            encA[i] + encB[i] + (useC ? encC[i] : 0) + (useD ? encD[i] : 0),
+        );
+
+        const decodeUser = (code, name) => {
+          const prod = chSum.map((v, i) => v * code[i]);
+          const s = prod.reduce((a, b) => a + b, 0);
+          const val = s / N;
+          return { prod, sum: s, val, bit: val >= 0 ? 1 : 0 };
+        };
+        const rA = decodeUser(cA, "A");
+        const rB = decodeUser(cB, "B");
+
+        let out = `<div class="formula-box">
+  <span class="comment">═══ CDMA Step-by-Step Solution ═══</span>
+  <br>
+  <span class="comment">Step 1: User codes</span><br>
+  User A code = [${cA.join(", ")}]   Data bit = ${bA === 1 ? "1 → send code" : " 0 → invert code"}
+  User B code = [${cB.join(", ")}]   Data bit = ${bB === 1 ? "1 → send code" : "0 → invert code"}
+  <br>
+  <span class="comment">Step 2: Orthogonality check  (dot product should be 0)</span><br>
+  A·B = ${cA.map((v, i) => "(" + v + "×" + cB[i] + ")").join("+")} = <span style="color:${orthoAB === 0 ? "var(--green)" : "var(--red)"}">${orthoAB} ${orthoAB === 0 ? "✓ Orthogonal" : "✗ NOT orthogonal!"}</span>
+  <br>
+  <span class="comment">Step 3: Encoding</span><br>
+  Enc_A = (${bA === 1 ? "+1" : "-1"}) × [${cA.join(", ")}] = [${encA.map((v) => (v > 0 ? "+" : "") + v).join(", ")}]
+  Enc_B = (${bB === 1 ? "+1" : "-1"}) × [${cB.join(", ")}] = [${encB.map((v) => (v > 0 ? "+" : "") + v).join(", ")}]
+  <br>
+  <span class="comment">Step 4: Channel sum (all signals superimposed)</span><br>
+  Sum  = [${chSum.map((v) => (v > 0 ? "+" : "") + v).join(", ")}]
+  <br>
+  <span class="comment">Step 5: Decode User A (multiply sum by code A, then sum/N)</span><br>
+  Prod = [${rA.prod.map((v) => (v > 0 ? "+" : "") + v).join(", ")}]
+  Sum  = ${rA.sum}   →   ${rA.sum}/${N} = <span style="color:var(--green)">${rA.val.toFixed(2)} → Bit = ${rA.bit} (original was ${bA}) ${rA.bit === bA ? "✓" : "✗"}</span><br>
+  <br>
+  <span class="comment">Step 6: Decode User B (multiply sum by code B, then sum/N)</span><br>
+  Prod = [${rB.prod.map((v) => (v > 0 ? "+" : "") + v).join(", ")}]
+  Sum  = ${rB.sum}   →   ${rB.sum}/${N} = <span style="color:var(--amber)">${rB.val.toFixed(2)} → Bit = ${rB.bit} (original was ${bB}) ${rB.bit === bB ? "✓" : "✗"}</span><br>
+  </div>`;
+        out += `<div class="output-box">
+      <div class="output-row"><span class="output-label">Codes orthogonal?</span><span class="output-value" style="color:${orthoAB === 0 ? "var(--green)" : "var(--red)"}">${orthoAB === 0 ? "Yes ✓" : "No ✗"}</span></div>
+      <div class="output-row"><span class="output-label">Channel Sum</span><span class="output-value">[${chSum.join(", ")}]</span></div>
+      <div class="output-row"><span class="output-label">Decoded User A</span><span class="output-value" style="color:var(--green)">Bit = ${rA.bit} ${rA.bit === bA ? "✓ Correct" : "✗ Error"}</span></div>
+      <div class="output-row"><span class="output-label">Decoded User B</span><span class="output-value" style="color:var(--amber)">Bit = ${rB.bit} ${rB.bit === bB ? "✓ Correct" : "✗ Error"}</span></div>
+    </div>`;
+
+        document.getElementById("cdma-num-output").innerHTML = out;
+      }
+
+      // ═══════════════════════ INIT ═══════════════════════
+      updateFDMA();
+      solveFDMA();
+      solveTDMA();
+      solveCDMA();
+    </script>
+  </body>
+</html>
