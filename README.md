@@ -38,9 +38,6 @@ This project is developed as part of **Computer Networks Lab (BCSE308L)** to hel
 Dr. Swaminathan Annadurai  
 VIT Chennai
 
-## 🌐 Live Demo
-(Add your GitHub Pages link here)
-
 ## 📚 References
 - Data Communications and Networking – Behrouz A. Forouzan  
 - https://www.geeksforgeeks.org/multiple-access-techniques/  
